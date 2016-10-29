@@ -1,4 +1,4 @@
-package ru.besttuts.finance.rest.models;
+package ru.besttuts.finance.rest.domain;
 
 import org.sql2o.Sql2o;
 

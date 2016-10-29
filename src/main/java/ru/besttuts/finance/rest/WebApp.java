@@ -4,18 +4,16 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import spark.ModelAndView;
+import ru.besttuts.finance.rest.dao.QuoteLastTradeDateDao;
+import ru.besttuts.finance.rest.dao.QuoteLastTradeDateDaoDb;
 import spark.servlet.SparkApplication;
-import spark.template.handlebars.HandlebarsTemplateEngine;
-import su.gidroizolyaciya.site.controllers.Api;
-import su.gidroizolyaciya.site.models.Type;
 
 import java.io.IOException;
 import java.io.StringWriter;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Date;
 
-import static spark.Spark.*;
+import static spark.Spark.get;
+import static spark.Spark.threadPool;
 
 /**
  * @author romanchekashov
@@ -28,27 +26,15 @@ public class WebApp implements SparkApplication {
     @Override
     public void init() {
         LOG.info("init");
-        staticFileLocation("/public");
         threadPool(8);
 
-        // get all post (using HTTP get method)
-        get("/api/parse-yahoo-for-quote-last-trade-date", (request, response) -> {
-            response.status(200);
-            response.type("application/json");
-            return dataToJson(model.getAllPosts());
-        });
+        QuoteLastTradeDateDao quoteLastTradeDateDao = new QuoteLastTradeDateDaoDb();
 
-        post("/api/callbacks", (request, response) -> {
-            return Api.use(request, response).saveForm(Type.CALLBACK);
-        });
-        post("/api/targets", (request, response) -> {
-            return Api.use(request, response).saveForm(Type.TARGET);
-        });
-        post("/api/questions", (request, response) -> {
-            return Api.use(request, response).saveForm(Type.QUESTION);
-        });
-        post("/api/comments", (request, response) -> {
-            return Api.use(request, response).saveForm(Type.COMMENT);
+        // get all post (using HTTP get method)
+        get("/api/quote-last-trade-date", (request, response) -> {
+            response.status(200);
+            response.type("application/json; charset=utf-8");
+            return dataToJson(quoteLastTradeDateDao.findByLastTradeDateGreaterThanOrderByLastTradeDate(new Date(10)));
         });
     }
 

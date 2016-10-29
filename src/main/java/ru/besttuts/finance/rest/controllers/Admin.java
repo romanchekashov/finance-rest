@@ -6,5 +6,4 @@ package ru.besttuts.finance.rest.controllers;
  */
 public class Admin {
 
-
 }
