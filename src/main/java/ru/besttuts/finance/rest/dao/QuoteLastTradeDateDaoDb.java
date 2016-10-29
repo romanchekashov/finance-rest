@@ -28,17 +28,36 @@ public class QuoteLastTradeDateDaoDb implements QuoteLastTradeDateDao {
                     "VALUES (:symbol, :code, :last_trade_date)", true)
                     .addParameter("symbol", quoteLastTradeDate.getSymbol())
                     .addParameter("code", quoteLastTradeDate.getCode())
-                    .addParameter("last_trade_date", quoteLastTradeDate.getLast_trade_date())
+                    .addParameter("last_trade_date", quoteLastTradeDate.getLastTradeDate())
                     .executeUpdate().getKeys()[0];
+        }
+    }
+
+    @Override
+    public String[] save(QuoteLastTradeDate[] quoteLastTradeDates) {
+        try (Connection conn = sql2o.open()) {
+            int LEN = quoteLastTradeDates.length;
+            String[] ids = new String[LEN];
+            for (int i = 0; i < LEN; i++){
+                ids[i] = (String) conn.createQuery("insert into quote_last_trade_date(symbol, code, last_trade_date) " +
+                        "VALUES (:symbol, :code, :last_trade_date)", true)
+                        .addParameter("symbol", quoteLastTradeDates[i].getSymbol())
+                        .addParameter("code", quoteLastTradeDates[i].getCode())
+                        .addParameter("last_trade_date", quoteLastTradeDates[i].getLastTradeDate())
+                        .executeUpdate().getKeys()[0];
+            }
+
+            return ids;
         }
     }
 
     @Override
     public List<QuoteLastTradeDate> findByLastTradeDateGreaterThanOrderByLastTradeDate(Date lastTradeDate) {
         try (Connection conn = sql2o.open()) {
-            return conn.createQuery("select * from quote_last_trade_date where last_trade_date > :last_trade_date " +
+            return conn.createQuery("select * from quote_last_trade_date where last_trade_date > :lastTradeDate " +
                     "order by last_trade_date")
-                    .addParameter("last_trade_date", lastTradeDate)
+                    .addParameter("lastTradeDate", lastTradeDate)
+                    .addColumnMapping("last_trade_date", "lastTradeDate")
                     .executeAndFetch(QuoteLastTradeDate.class);
         }
     }

@@ -13,6 +13,8 @@ public interface QuoteLastTradeDateDao extends Model<QuoteLastTradeDate, String>
 
     String save(QuoteLastTradeDate quoteLastTradeDate);
 
+    String[] save(QuoteLastTradeDate[] quoteLastTradeDates);
+
     List<QuoteLastTradeDate> findByLastTradeDateGreaterThanOrderByLastTradeDate(Date lastTradeDate);
 
 }

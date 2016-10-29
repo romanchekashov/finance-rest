@@ -10,7 +10,7 @@ import java.util.Date;
 public class QuoteLastTradeDate implements Validable {
     private String symbol;
     private Code code;
-    private Date last_trade_date;
+    private Date lastTradeDate;
 
     @Override
     public boolean isValid() {
@@ -35,11 +35,11 @@ public class QuoteLastTradeDate implements Validable {
         this.code = code;
     }
 
-    public Date getLast_trade_date() {
-        return last_trade_date;
+    public Date getLastTradeDate() {
+        return lastTradeDate;
     }
 
-    public void setLast_trade_date(Date last_trade_date) {
-        this.last_trade_date = last_trade_date;
+    public void setLastTradeDate(Date lastTradeDate) {
+        this.lastTradeDate = lastTradeDate;
     }
 }

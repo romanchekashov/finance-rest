@@ -13,4 +13,6 @@ public interface Model<T, I> {
 
     I save(T t);
 
+    I[] save(T[] t);
+
 }
