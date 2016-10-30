@@ -7,15 +7,10 @@ import java.util.Date;
  * @since 13.03.2016
  */
 
-public class QuoteLastTradeDate implements Validable {
+public class QuoteLastTradeDate {
     private String symbol;
     private Code code;
     private Date lastTradeDate;
-
-    @Override
-    public boolean isValid() {
-        return true;
-    }
 
     public QuoteLastTradeDate() {}
 

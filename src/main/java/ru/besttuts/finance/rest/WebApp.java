@@ -7,12 +7,15 @@ import org.slf4j.LoggerFactory;
 import ru.besttuts.finance.rest.dao.QuoteLastTradeDateDao;
 import ru.besttuts.finance.rest.dao.QuoteLastTradeDateDaoDb;
 import ru.besttuts.finance.rest.domain.QuoteLastTradeDate;
+import ru.besttuts.finance.rest.dto.QuoteLastTradeDateDto;
 import ru.besttuts.finance.rest.util.Constants;
 import spark.servlet.SparkApplication;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import static spark.Spark.get;
 import static spark.Spark.post;
@@ -39,7 +42,12 @@ public class WebApp implements SparkApplication {
         get(UrlQuoteLastTradeDates, (request, response) -> {
             response.status(200);
             response.type("application/json; charset=utf-8");
-            return dataToJson(quoteLastTradeDateDao.findByLastTradeDateGreaterThanOrderByLastTradeDate(new Date(10)));
+            List<QuoteLastTradeDate> quotes = quoteLastTradeDateDao.findByLastTradeDateGreaterThanOrderByLastTradeDate(new Date(10));
+            List<QuoteLastTradeDateDto> quoteDtos = new ArrayList<QuoteLastTradeDateDto>(quotes.size());
+            quotes.stream().forEach(quote -> {
+                quoteDtos.add(new QuoteLastTradeDateDto(quote.getSymbol(), quote.getCode(), quote.getLastTradeDate().getTime()));
+            });
+            return dataToJson(quoteDtos);
         });
 
         post(UrlQuoteLastTradeDates, (request, response) -> {
