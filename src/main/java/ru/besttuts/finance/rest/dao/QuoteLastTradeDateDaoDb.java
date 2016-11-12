@@ -22,6 +22,13 @@ public class QuoteLastTradeDateDaoDb implements QuoteLastTradeDateDao {
     }
 
     @Override
+    public void deleteAll() {
+        try (Connection conn = sql2o.open()) {
+            conn.createQuery("delete from quote_last_trade_date").executeUpdate();
+        }
+    }
+
+    @Override
     public String save(QuoteLastTradeDate quoteLastTradeDate) {
         try (Connection conn = sql2o.open()) {
             return (String) conn.createQuery("insert into quote_last_trade_date(symbol, code, last_trade_date) " +
@@ -55,7 +62,7 @@ public class QuoteLastTradeDateDaoDb implements QuoteLastTradeDateDao {
     public List<QuoteLastTradeDate> findByLastTradeDateGreaterThanOrderByLastTradeDate(Date lastTradeDate) {
         try (Connection conn = sql2o.open()) {
             return conn.createQuery("select * from quote_last_trade_date where last_trade_date > :lastTradeDate " +
-                    "order by last_trade_date")
+                    "order by code, last_trade_date")
                     .addParameter("lastTradeDate", lastTradeDate)
                     .addColumnMapping("last_trade_date", "lastTradeDate")
                     .executeAndFetch(QuoteLastTradeDate.class);

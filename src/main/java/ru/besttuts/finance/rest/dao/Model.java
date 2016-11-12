@@ -15,4 +15,5 @@ public interface Model<T, I> {
 
     I[] save(T[] t);
 
+    void deleteAll();
 }

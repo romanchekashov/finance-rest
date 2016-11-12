@@ -14,6 +14,7 @@ import spark.servlet.SparkApplication;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -53,10 +54,13 @@ public class WebApp implements SparkApplication {
         post(UrlQuoteLastTradeDates, (request, response) -> {
             ObjectMapper mapper = new ObjectMapper();
             QuoteLastTradeDate[] quoteLastTradeDates = mapper.readValue(request.body(), QuoteLastTradeDate[].class);
+            quoteLastTradeDateDao.deleteAll();
             String[] ids = quoteLastTradeDateDao.save(quoteLastTradeDates);
             response.status(Constants.HTTP_OK);
             response.type("application/json");
-            return ids;
+            String idsJson = dataToJson(ids);
+            LOG.info("idsJson = " + idsJson);
+            return idsJson;
         });
     }
 
