@@ -13,14 +13,13 @@ import spark.servlet.SparkApplication;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import static spark.Spark.get;
-import static spark.Spark.post;
-import static spark.Spark.threadPool;
+import static spark.Spark.*;
 
 /**
  * @author romanchekashov
@@ -43,7 +42,10 @@ public class WebApp implements SparkApplication {
         get(UrlQuoteLastTradeDates, (request, response) -> {
             response.status(200);
             response.type("application/json; charset=utf-8");
-            List<QuoteLastTradeDate> quotes = quoteLastTradeDateDao.findByLastTradeDateGreaterThanOrderByLastTradeDate(new Date(10));
+
+            Date todayNY = Date.from(ZonedDateTime.now(ZoneId.of("America/New_York")).toInstant());
+            List<QuoteLastTradeDate> quotes = quoteLastTradeDateDao
+                    .findByLastTradeDateGreaterThanOrderByLastTradeDate(todayNY);
             List<QuoteLastTradeDateDto> quoteDtos = new ArrayList<QuoteLastTradeDateDto>(quotes.size());
             quotes.stream().forEach(quote -> {
                 quoteDtos.add(new QuoteLastTradeDateDto(quote.getSymbol(), quote.getCode(), quote.getLastTradeDate().getTime()));
